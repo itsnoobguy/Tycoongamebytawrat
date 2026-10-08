@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Empire</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #dff3ff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .top {
+            background: #123;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .box {
+            background: white;
+            width: 280px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 17px;
+            border: none;
+            border-radius: 8px;
+            background: green;
+            color: white;
+            margin: 5px;
+        }
+
+        button:disabled {
+            background: gray;
+        }
+
+        .back {
+            background: blue;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+<div class="top">
+
+    <h1>🌎 MY EMPIRE</h1>
+
+    <h2>💰 $<span id="money">0</span></h2>
+
+    <h3>💵 Income: $<span id="income">0</span>/sec</h3>
+
+</div>
+
+
+<h1>🏗️ Empire Facilities</h1>
+
+
+<div class="box">
+
+    <h2>🏦 Bank</h2>
+
+    <p>Cost: $500,000</p>
+
+    <p>+$50,000/sec</p>
+
+    <button id="bank" onclick="buyBank()">
+        Buy Bank
+    </button>
+
+</div>
+
+
+<div class="box">
+
+    <h2>🏨 Luxury Hotel</h2>
+
+    <p>Cost: $1,000,000</p>
+
+    <p>+$100,000/sec</p>
+
+    <button id="hotel" onclick="buyHotel()">
+        Buy Hotel
+    </button>
+
+</div>
+
+
+<div class="box">
+
+    <h2>🛍️ Shopping Mall</h2>
+
+    <p>Cost: $5,000,000</p>
+
+    <p>+$500,000/sec</p>
+
+    <button id="mall" onclick="buyMall()">
+        Buy Shopping Mall
+    </button>
+
+</div>
+
+
+<div class="box">
+
+    <h2>✈️ International Airport</h2>
+
+    <p>Cost: $25,000,000</p>
+
+    <p>+$2,500,000/sec</p>
+
+    <button id="airport" onclick="buyAirport()">
+        Buy Airport
+    </button>
+
+</div>
+
+
+<div class="box">
+
+    <h2>🚢 Mega Port</h2>
+
+    <p>Cost: $100,000,000</p>
+
+    <p>+$10,000,000/sec</p>
+
+    <button id="port" onclick="buyPort()">
+        Buy Mega Port
+    </button>
+
+</div>
+
+
+<div class="box">
+
+    <h2>🛰️ Space Station</h2>
+
+    <p>Cost: $1,000,000,000</p>
+
+    <p>+$100,000,000/sec</p>
+
+    <button id="station" onclick="buyStation()">
+        Build Space Station
+    </button>
+
+</div>
+
+
+<br>
+
+
+<a href="index.html">
+
+    <button class="back">
+        ← Back To Main Tycoon
+    </button>
+
+</a>
+
+
+<script>
+
+let money = 0;
+let income = 0;
+
+let empire = {
+
+    bank: false,
+    hotel: false,
+    mall: false,
+    airport: false,
+    port: false,
+    station: false
+
+};
+
+
+function loadGame() {
+
+    let savedMoney =
+        localStorage.getItem("tycoonMoney");
+
+    let savedIncome =
+        localStorage.getItem("tycoonIncome");
+
+    let savedEmpire =
+        localStorage.getItem("tycoonEmpire");
+
+
+    if (savedMoney !== null) {
+        money = Number(savedMoney);
+    }
+
+    if (savedIncome !== null) {
+        income = Number(savedIncome);
+    }
+
+    if (savedEmpire !== null) {
+        empire = JSON.parse(savedEmpire);
+    }
+}
+
+
+function saveGame() {
+
+    localStorage.setItem(
+        "tycoonMoney",
+        money
+    );
+
+    localStorage.setItem(
+        "tycoonIncome",
+        income
+    );
+
+    localStorage.setItem(
+        "tycoonEmpire",
+        JSON.stringify(empire)
+    );
+}
+
+
+function update() {
+
+    document.getElementById("money").innerText =
+        Math.floor(money);
+
+    document.getElementById("income").innerText =
+        income;
+
+
+    updateButton("bank", empire.bank, "Bank Owned ✅");
+
+    updateButton("hotel", empire.hotel, "Hotel Owned ✅");
+
+    updateButton("mall", empire.mall, "Mall Owned ✅");
+
+    updateButton("airport", empire.airport, "Airport Owned ✈️");
+
+    updateButton("port", empire.port, "Port Owned 🚢");
+
+    updateButton("station", empire.station, "Space Station Built 🛰️");
+}
+
+
+function updateButton(id, owned, text) {
+
+    if (owned) {
+
+        let button =
+            document.getElementById(id);
+
+        button.innerText = text;
+
+        button.disabled = true;
+    }
+}
+
+
+function buyFacility(cost, incomeAmount, name) {
+
+    if (money >= cost && !empire[name]) {
+
+        money -= cost;
+
+        income += incomeAmount;
+
+        empire[name] = true;
+
+        update();
+
+        saveGame();
+    }
+}
+
+
+function buyBank() {
+
+    buyFacility(500000, 50000, "bank");
+
+}
+
+
+function buyHotel() {
+
+    buyFacility(1000000, 100000, "hotel");
+
+}
+
+
+function buyMall() {
+
+    buyFacility(5000000, 500000, "mall");
+
+}
+
+
+function buyAirport() {
+
+    buyFacility(25000000, 2500000, "airport");
+
+}
+
+
+function buyPort() {
+
+    buyFacility(100000000, 10000000, "port");
+
+}
+
+
+function buyStation() {
+
+    buyFacility(1000000000, 100000000, "station");
+
+}
+
+
+loadGame();
+
+update();
+
+
+setInterval(function() {
+
+    money += income;
+
+    update();
+
+    saveGame();
+
+}, 1000);
+
+</script>
+
+</body>
+</html>
