@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Tycoon</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background: #eeeeee;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .top {
+            background: #222;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .box {
+            background: white;
+            width: 280px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 17px;
+            border: none;
+            border-radius: 8px;
+            background: green;
+            color: white;
+            margin: 5px;
+        }
+
+        button:disabled {
+            background: gray;
+        }
+
+        a button {
+            background: blue;
+        }
+
+        .skill {
+            border: 3px solid purple;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="top">
+    <h1>🏙️ MY TYCOON</h1>
+
+    <h2>💰 $<span id="money">100</span></h2>
+
+    <h3>💵 Income: $<span id="income">0</span>/sec</h3>
+</div>
+
+
+<h1>🏗️ Facilities</h1>
+
+
+<div class="box">
+    <h2>🏪 Small Shop</h2>
+    <p>Cost: $50</p>
+    <p>+$5/sec</p>
+    <button id="shop" onclick="buyShop()">Buy Shop</button>
+</div>
+
+
+<div class="box">
+    <h2>🏭 Factory</h2>
+    <p>Cost: $200</p>
+    <p>+$20/sec</p>
+    <button id="factory" onclick="buyFactory()">Buy Factory</button>
+</div>
+
+
+<div class="box">
+    <h2>🚚 Delivery Center</h2>
+    <p>Cost: $500</p>
+    <p>+$50/sec</p>
+    <button id="delivery" onclick="buyDelivery()">Buy Delivery</button>
+</div>
+
+
+<div class="box">
+    <h2>🏢 Office</h2>
+    <p>Cost: $1,000</p>
+    <p>+$100/sec</p>
+    <button id="office" onclick="buyOffice()">Buy Office</button>
+</div>
+
+
+<div class="box">
+    <h2>⚡ Power Plant</h2>
+    <p>Cost: $2,500</p>
+    <p>+$250/sec</p>
+    <button id="power" onclick="buyPower()">Buy Power Plant</button>
+</div>
+
+
+<div class="box">
+    <h2>🏙️ Skyscraper</h2>
+    <p>Cost: $10,000</p>
+    <p>+$1,000/sec</p>
+    <button id="sky" onclick="buySky()">Buy Skyscraper</button>
+</div>
+
+
+<div class="box">
+    <h2>💻 Tech Company</h2>
+    <p>Cost: $50,000</p>
+    <p>+$5,000/sec</p>
+    <button id="tech" onclick="buyTech()">Buy Tech Company</button>
+</div>
+
+
+<div class="box">
+    <h2>🚀 Space Center</h2>
+    <p>Cost: $250,000</p>
+    <p>+$25,000/sec</p>
+    <button id="space" onclick="buySpace()">Buy Space Center</button>
+</div>
+
+
+<h1>🌳 Skill Tree</h1>
+
+
+<div class="box skill">
+    <h2>🛒 Better Shops</h2>
+    <p>Cost: $100</p>
+    <p>+$5/sec</p>
+    <button id="skill1" onclick="buySkill1()">Unlock</button>
+</div>
+
+
+<div class="box skill">
+    <h2>🏭 Better Factories</h2>
+    <p>Cost: $300</p>
+    <p>+$20/sec</p>
+    <button id="skill2" onclick="buySkill2()">Unlock</button>
+</div>
+
+
+<div class="box skill">
+    <h2>🚚 Fast Delivery</h2>
+    <p>Cost: $1,000</p>
+    <p>+$50/sec</p>
+    <button id="skill3" onclick="buySkill3()">Unlock</button>
+</div>
+
+
+<div class="box skill">
+    <h2>👑 Business Mastery</h2>
+    <p>Cost: $5,000</p>
+    <p>Income ×1.5</p>
+    <button id="skill4" onclick="buySkill4()">Unlock</button>
+</div>
+
+
+<br>
+
+<a href="page2.html">
+    <button>🌎 Go To Empire →</button>
+</a>
+
+
+<script>
+
+let money = 100;
+
+localStorage.removeItem("tycoonMoney");
+localStorage.removeItem("tycoonIncome");
+localStorage.removeItem("tycoonOwned"); income = 0;
+
+let owned = {
+    shop: false,
+    factory: false,
+    delivery: false,
+    office: false,
+    power: false,
+    sky: false,
+    tech: false,
+    space: false,
+    skill1: false,
+    skill2: false,
+    skill3: false,
+    skill4: false
+};
+
+
+function saveGame() {
+
+    localStorage.setItem(
+        "tycoonMoney",
+        money
+    );
+
+    localStorage.setItem(
+        "tycoonIncome",
+        income
+    );
+
+    localStorage.setItem(
+        "tycoonOwned",
+        JSON.stringify(owned)
+    );
+}
+
+
+function loadGame() {
+
+    let savedMoney =
+        localStorage.getItem("tycoonMoney");
+
+    let savedIncome =
+        localStorage.getItem("tycoonIncome");
+
+    let savedOwned =
+        localStorage.getItem("tycoonOwned");
+
+
+    if (savedMoney !== null) {
+        money = Number(savedMoney);
+    }
+
+    if (savedIncome !== null) {
+        income = Number(savedIncome);
+    }
+
+    if (savedOwned !== null) {
+        owned = JSON.parse(savedOwned);
+    }
+}
+
+
+function update() {
+
+    document.getElementById("money").innerText =
+        Math.floor(money);
+
+    document.getElementById("income").innerText =
+        income;
+
+
+    updateButton("shop", owned.shop, "Shop Owned ✅");
+    updateButton("factory", owned.factory, "Factory Owned ✅");
+    updateButton("delivery", owned.delivery, "Delivery Owned ✅");
+    updateButton("office", owned.office, "Office Owned ✅");
+    updateButton("power", owned.power, "Power Plant Owned ✅");
+    updateButton("sky", owned.sky, "Skyscraper Owned ✅");
+    updateButton("tech", owned.tech, "Tech Company Owned ✅");
+    updateButton("space", owned.space, "Space Center Owned 🚀");
+
+    updateButton("skill1", owned.skill1, "Unlocked ✅");
+    updateButton("skill2", owned.skill2, "Unlocked ✅");
+    updateButton("skill3", owned.skill3, "Unlocked ✅");
+    updateButton("skill4", owned.skill4, "MASTERED 👑");
+}
+
+
+function updateButton(id, isOwned, text) {
+
+    let button =
+        document.getElementById(id);
+
+    if (isOwned) {
+        button.innerText = text;
+        button.disabled = true;
+    }
+}
+
+
+function buy(cost, incomeAmount, name) {
+
+    if (money >= cost && !owned[name]) {
+
+        money -= cost;
+        income += incomeAmount;
+
+        owned[name] = true;
+
+        update();
+        saveGame();
+    }
+}
+
+
+function buyShop() {
+    buy(50, 5, "shop");
+}
+
+
+function buyFactory() {
+    buy(200, 20, "factory");
+}
+
+
+function buyDelivery() {
+    buy(500, 50, "delivery");
+}
+
+
+function buyOffice() {
+    buy(1000, 100, "office");
+}
+
+
+function buyPower() {
+    buy(2500, 250, "power");
+}
+
+
+function buySky() {
+    buy(10000, 1000, "sky");
+}
+
+
+function buyTech() {
+    buy(50000, 5000, "tech");
+}
+
+
+function buySpace() {
+    buy(250000, 25000, "space");
+}
+
+
+function buySkill1() {
+    buy(100, 5, "skill1");
+}
+
+
+function buySkill2() {
+    buy(300, 20, "skill2");
+}
+
+
+function buySkill3() {
+    buy(1000, 50, "skill3");
+}
+
+
+function buySkill4() {
+
+    if (money >= 5000 && !owned.skill4) {
+
+        money -= 5000;
+
+        income =
+            Math.floor(income * 1.5);
+
+        owned.skill4 = true;
+
+        update();
+        saveGame();
+    }
+}
+
+
+loadGame();
+
+update();
+
+
+setInterval(function() {
+
+    money += income;
+
+    update();
+    saveGame();
+
+}, 1000);
+
+</script>
+
+</body>
+</html>
